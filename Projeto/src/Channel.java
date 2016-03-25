@@ -18,19 +18,20 @@ public class Channel {
         this.name = name;
 
         try {
-            mcSocket = new MulticastSocket(this.port);
+            this.address = InetAddress.getByName(ip);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("IP is: " + ip);
+        try {
+            mcSocket = new MulticastSocket(port);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         try {
-            address = InetAddress.getByName(ip);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            mcSocket.joinGroup(address);
+            mcSocket.joinGroup(this.address);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -40,11 +41,8 @@ public class Channel {
         DatagramPacket packet = null;
         byte[] buf = message.getBytes();
 
-        try {
-            packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("224.0.0.0"), 4446);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+        packet = new DatagramPacket(buf, buf.length, address, 4446);
+
 
         try {
             this.mcSocket.send(packet);
