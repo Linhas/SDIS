@@ -25,33 +25,6 @@ public class Main {
         //restoreListener.start();
 
 
-        //apenas para testar o envio de uma mensasgem!
-        //daqui
-        MulticastSocket mc = null;
-        try {
-            mc = new MulticastSocket();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String send = "Backup is hearing something!\n";
-
-        byte[] buf = send.getBytes();
-        DatagramPacket packet = null;
-        try {
-            packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("225.1.1.1"), 1001);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            mc.send(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //até aqui
-
-
     }
 
     public static RestoreListener getRestoreListener() {

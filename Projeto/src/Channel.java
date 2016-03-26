@@ -37,11 +37,10 @@ public class Channel {
         }
     }
 
-    public void send(String message){
+    public void send(byte[] message){
         DatagramPacket packet = null;
-        byte[] buf = message.getBytes();
 
-        packet = new DatagramPacket(buf, buf.length, address, 4446);
+        packet = new DatagramPacket(message, message.length, address, this.port);
 
 
         try {

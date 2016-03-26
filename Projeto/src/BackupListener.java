@@ -20,4 +20,8 @@ public class BackupListener extends Thread {
             }
         }
     }
+
+    public void send(byte[] message){
+        backupChannel.send(message);
+    }
 }
