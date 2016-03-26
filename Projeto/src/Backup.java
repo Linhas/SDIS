@@ -13,6 +13,7 @@ public class Backup extends Thread{
 
     public Backup(byte[] message){
         this.message = message;
+        header = new ArrayList<>();
     }
 
     public void run() {
@@ -33,6 +34,15 @@ public class Backup extends Thread{
         for(String field : rawHeader){
             header.add(field.trim());
         }
+
+        if (header.get(0).equals("PUTCHUNK")){
+            if (header.get(1).equals(Constants.VERSION)){
+                System.out.println("YEY!");
+            }
+
+        }
+        else
+            System.out.println("Invalid message!");
     }
 
 
