@@ -19,7 +19,7 @@ public class Sender {
             e.printStackTrace();
         }
 
-        String send = "PUTCHUNK 1.0 id fileid chunkNo repdeg\r\n" + 32;
+        String send = "PUTCHUNK 1.0 id fileid chunkNo repdeg\r\n\r\n" + 32;
 
         byte[] buf = send.getBytes();
         DatagramPacket packet = null;
