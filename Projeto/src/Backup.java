@@ -43,7 +43,9 @@ public class Backup extends Thread{
         //get body (message-header)
         System.out.println("TESTING!!!!!");
 
-        byte[] body = Arrays.copyOfRange(message, aux.length() + 4, message.length);
+        // Alterei isto: aux.length() + 4,
+		// para isto porque que estava a dar uma exceção illegal argument expression copyOfRange 1028>1024
+        byte[] body = Arrays.copyOfRange(message, aux.length(), message.length);
 
         System.out.println("body: "+ new String(body));
 
