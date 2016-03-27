@@ -10,12 +10,10 @@ public class Channel {
     private InetAddress address;
     private Integer port;
     private MulticastSocket mcSocket;
-    private String name;
 
 
-    public Channel(String name, String ip, Integer port){
+    public Channel(String ip, Integer port){
         this.port = port;
-        this.name = name;
 
         try {
             this.address = InetAddress.getByName(ip);
@@ -92,13 +90,5 @@ public class Channel {
 
     public void setMcSocket(MulticastSocket mcSocket) {
         this.mcSocket = mcSocket;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

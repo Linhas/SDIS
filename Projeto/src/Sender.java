@@ -24,7 +24,7 @@ public class Sender {
         byte[] buf = send.getBytes();
         DatagramPacket packet = null;
         try {
-            packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("225.1.1.1"), 1001);
+            packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("224.1.1.1"), 1001);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -34,6 +34,22 @@ public class Sender {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        String send2 = "PUTCHUNK 1.0 id2 fileid2 chunkNo1 repdeg1\r\n\r\n" + 32332;
+        buf = send2.getBytes();
+        DatagramPacket packet2 = null;
+        try {
+            packet2 = new DatagramPacket(buf, buf.length, InetAddress.getByName("224.1.1.1"), 1001);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            mc.send(packet2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //até aqui
 
     }
