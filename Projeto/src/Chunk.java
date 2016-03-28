@@ -10,6 +10,7 @@ public class Chunk {
 	
 	private int chunkNo;
 	private String fileId;
+	private int id;
 	
 	private int replicationDeg;
 	
@@ -22,11 +23,12 @@ public class Chunk {
 	private ArrayList<String> peers;
 
 	
-	public Chunk(String idFile, int chunkn, int repliDeg, byte[] data){
+	public Chunk(int id, String idFile, int chunkn, int repliDeg, byte[] data){
 		setFileId(idFile);
 		setChunkNo(chunkn);
 		setReplicationDeg(repliDeg);
 		setPeers(new ArrayList<String>());
+		
 		this.setData(data);
 	}
 	
@@ -92,6 +94,16 @@ public class Chunk {
 	
 	public void addPeers(String peer){
 		peers.add(peer);
+	}
+
+
+	public int getId() {
+		return id;
+	}
+
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	

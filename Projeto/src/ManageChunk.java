@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 
@@ -16,12 +17,16 @@ public class ManageChunk {
 	private static long fileSize;
 	private int numberOfChunks;
 
+	private int id;
+
 	public ManageChunk(String fileName, int repDegree) {
 		this.repDegree = repDegree;
 		this.fileName = fileName;
 	}
-
-	public void createNumberOfChunks(){
+/*
+ * Counts number of chunks in a file by dividing file
+ */
+	public void countNumberOfChunks(){
 		
 		if(file.exists() && !file.isDirectory()) { 
 		    System.out.printf("The File %s does not exist or abstract pathname is a directory.", fileName);
@@ -29,7 +34,10 @@ public class ManageChunk {
 	fileSize = file.length();
 	numberOfChunks = (int) (fileSize/Constants.CHUNKSIZE) +1;
 	}
-	//get list of chunks so they can be sent
+	
+/*
+ * Get list of chunks so they can be sent
+ */
 	public Chunk[] getListOfChunks() throws IOException{
 		
 		Chunk[] totalChunks = new Chunk[numberOfChunks];
@@ -48,13 +56,13 @@ public class ManageChunk {
 				
 				if(chunkSize == 0){
 					//(String idFile, int chunkn, int repliDeg, byte[] data)
-					Chunk chunk = new Chunk(fileId, i, repDegree, null);
+					Chunk chunk = new Chunk(id, fileId, i, repDegree, null);
 					totalChunks[i]= chunk;
 				}
 				else{
 					data = new byte[chunkSize];
 					int dataSize = fileStream.read(data);
-					Chunk chunk = new Chunk(fileId, i, repDegree, data);
+					Chunk chunk = new Chunk(id, fileId, i, repDegree, data);
 					totalChunks[i]= chunk;
 					totalSize += dataSize;
 				}
@@ -67,7 +75,10 @@ public class ManageChunk {
 		
 		return null;
 	}
-	// Creates fileId with Sha256 used to identify file 
+
+/*
+ *  Creates fileId with Sha256 used to identify file 
+ */
 	public void sha256() {
 	    try{
 	    	
@@ -78,6 +89,7 @@ public class ManageChunk {
 	       
 	        digest.update(inForId.getBytes("UTF-8"));
 	        fileH = digest.digest();
+	      //convert byte array to hexadecimal see: StackOverflow
 	        StringBuffer hexString = new StringBuffer();
 
 	        for (int i = 0; i < fileH.length; i++) {
@@ -91,5 +103,29 @@ public class ManageChunk {
 	       throw new RuntimeException(ex);
 	    }
 	}
-	
+/*
+ * Get File Id	
+ */
+	public String getFileId(){
+		return fileId;
+	}
+/*
+ * SAVE CHUNKS, definir diretorio?? 	
+ */
+	public void saveChunk(Chunk chunk){
+		String filename = chunk.getFileId() + "." + chunk.getId();
+		
+		File filechunk = new File(filename);
+		if(chunk.getData().length > 0)
+		{
+		try {
+			FileOutputStream writer = new FileOutputStream(filechunk);
+			writer.write(chunk.getData());
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		}
+		
+	} 
 }
