@@ -29,7 +29,7 @@ public class Chunk {
 		setPeers(new ArrayList<String>());
 		this.setData(data);
 	}
-
+	
 
 	public int getChunkNo() {
 		return chunkNo;

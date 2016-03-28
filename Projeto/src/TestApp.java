@@ -11,12 +11,14 @@ import java.util.Arrays;
 
 public class TestApp {
 
+    private static MulticastSocket mcSocket;
+	private static Listener backupListener, restoreListener;
+
 	private static String ipAddress;
 	private static int port;
-	private static String command;
+	private static Integer command;
 	private static String operationSpecs;
 
-    private static MulticastSocket mcSocket;
 
 	public static void main(String argv[]) throws Exception {
 
@@ -27,15 +29,50 @@ public class TestApp {
 		checkSubProtocol(argv[1]);
 		concat(argv);
 		
-
+		
 		try {
             mcSocket = new MulticastSocket(port);
         } catch (IOException e) {
             e.printStackTrace();
         }
 		sendMessage();
+		
+		
+		waitForAnswer(command);
 
-		// <peer_ap> <sub_protocol> <opnd_1> <opnd_2>
+
+		
+	}
+
+	private static void waitForAnswer(Integer command2) {
+		switch (command2){
+		case 1:
+			backupListener = new Listener("Backup", ipAddress, port);
+			backupListener.start();
+			boolean waiting = true;
+			while(waiting){
+				System.out.println("He did receive");
+				waiting = false;
+			}
+			System.exit(0);
+			//PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF><Body>
+			//ficar a ouvir o backup
+			break;
+		case 2:
+			restoreListener = new Listener("Restore", "224.1.1.2", 1002);
+	        restoreListener.start();
+			//GETCHUNK <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>
+			// Ficar a ouvir o restore
+			break;
+		case 3:
+			//DELETE <Version> <SenderId> <FileId> <CRLF><CRLF>
+			break;
+		case 4:
+			//REMOVED <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>
+			break;
+		
+		}
+		
 	}
 
 	private static void concat(String[] argv) {
@@ -48,12 +85,17 @@ public class TestApp {
 	}
 
 	private static void checkSubProtocol(String com) {
-		command = com.toUpperCase();
-		if (command.equals("BACKUP") || command.equals("RESTORE") || command.equals("DELETE")
-				|| command.equals("SPACE_RECLAIM")) {
-
+		String comma= com.toUpperCase();
+		if (comma.equals("BACKUP")){
+			command = 1;
+		} else if (comma.equals("RESTORE")){
+			command = 2;
+		} else if (comma.equals("DELETE")){
+			command = 3;
+		} else if(comma.equals("SPACE_RECLAIM")) {
+			command = 4;
 		} else {
-			System.out.println("Error in command input. Commads accepted: BACKUP, RESTORE, DELETE and SPACE_RECLAIM");
+			System.out.println("Error in command input. Commads accepted: BACKUP, RESTORE, DELETE and SPACE_RECLAIM.");
 		}
 	}
 
@@ -69,6 +111,8 @@ public class TestApp {
 	}
 
 	private static void sendMessage() {
+		//Se tiver de ir para um MDB multicast data channel isto também está mal 
+		//eheh
 		System.out.println("(>^.^)> ");
 		System.out.printf("\nTestApp sending command %s, %s to IP address %s - Port number %d\n", command, operationSpecs, ipAddress, port);
 		
@@ -90,4 +134,6 @@ public class TestApp {
         }
         System.out.println(Arrays.toString(message));
 	}
+	
+	
 }
