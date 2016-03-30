@@ -1,8 +1,6 @@
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
-import java.net.UnknownHostException;
+import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 
@@ -10,40 +8,36 @@ import java.util.Arrays;
 // comando java TestApp 225.1.1.1:1001 Backup chunk.txt 1
 
 public class TestApp {
-
-    private static MulticastSocket mcSocket;
-	private static Listener backupListener, restoreListener;
-
 	private static String ipAddress;
 	private static int port;
 	private static Integer command;
 	private static String operationSpecs;
+	private static DatagramSocket socket = null;
 
 
 	public static void main(String argv[]) throws Exception {
+
+
 
 		if (argv.length < 3) {
 			System.out.println("Usage: <peer_ap> <sub_protocol> <opnd_1> <opnd_2>");
 		}
 		splitPeerApp(argv[0]);
+
+
 		checkSubProtocol(argv[1]);
 		concat(argv);
 		
-		
-		try {
-            mcSocket = new MulticastSocket(port);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
 		sendMessage();
 		
 		
-		waitForAnswer(command);
+		//waitForAnswer(command);
 
 
 		
 	}
-
+	/*
 	private static void waitForAnswer(Integer command2) {
 		switch (command2){
 		case 1:
@@ -74,6 +68,7 @@ public class TestApp {
 		}
 		
 	}
+	*/
 
 	private static void concat(String[] argv) {
 		StringBuffer result = new StringBuffer();
@@ -111,28 +106,47 @@ public class TestApp {
 	}
 
 	private static void sendMessage() {
-		//Se tiver de ir para um MDB multicast data channel isto também está mal 
+
+
+		//Se tiver de ir para um MDB multicast data channel isto tambÃ©m estÃ¡ mal
 		//eheh
 		System.out.println("(>^.^)> ");
 		System.out.printf("\nTestApp sending command %s, %s to IP address %s - Port number %d\n", command, operationSpecs, ipAddress, port);
-		
-		DatagramPacket packet = null;
-		byte[] message = new byte[256];
-		message = (command + " " + operationSpecs).getBytes();
-		
-        try {
-			packet = new DatagramPacket(message, message.length, InetAddress.getByName(ipAddress), port);
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
+
+		try {
+			socket	= new DatagramSocket();
+		} catch (SocketException e) {
 			e.printStackTrace();
 		}
 
-        try {
-            mcSocket.send(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println(Arrays.toString(message));
+		InetAddress address = null;
+		try {
+			address = InetAddress.getByName(ipAddress);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+
+
+
+		byte[] message = new byte[256];
+
+		message = (command + " " + operationSpecs + Constants.CRLF).getBytes();
+
+		DatagramPacket packet = new DatagramPacket(message, message.length, address, port);
+		try {
+			socket.send(packet);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Message sent!");
+
+
+
+
+
+
+
+        System.out.println(new String(message, StandardCharsets.UTF_8));
 	}
 	
 	
