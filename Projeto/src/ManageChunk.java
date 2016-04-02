@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 
 public class ManageChunk {
 
@@ -27,10 +28,10 @@ public class ManageChunk {
  * Counts number of chunks in a file by dividing file
  */
 	public void countNumberOfChunks(){
-		
-		if(file.exists() && !file.isDirectory()) { 
-		    System.out.printf("The File %s does not exist or abstract pathname is a directory.", fileName);
-		}
+
+	if(file.exists() && !file.isDirectory()) {
+		System.out.printf("The File %s does not exist or abstract pathname is a directory.", fileName);
+	}
 	fileSize = file.length();
 	numberOfChunks = (int) (fileSize/Constants.CHUNKSIZE) +1;
 	}

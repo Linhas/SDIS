@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.ArrayList;
 
 /**
  * Created by Bernardo on 16/03/2016.
@@ -13,9 +14,15 @@ public class Peer {
 
 
     public static void main(String[] args) {
+        byte[] message = receiveMessage();
 
-        String message = receiveMessage();
-        System.out.println(message);
+        ArrayList<String> splitMsg = Utils.splitMessage(message);
+
+        //se restore
+
+        //se space recclaim
+
+        //se delete
 
 
         controlListener = new Listener("Control", "224.1.1.0", 1000);
@@ -25,6 +32,30 @@ public class Peer {
         controlListener.start();
         backupListener.start();
         restoreListener.start();
+
+        if (splitMsg.get(0).toUpperCase().equals("BACKUP")){
+            //TODO: BACKUP
+
+            //ir buscar o repDeg
+            //dividir em chunks
+            //construir mensagem PUTCHUNK
+            //enviar cada chunk para o MDB tantas vezes como repDeg
+
+
+
+        }
+        else if (splitMsg.get(0).toUpperCase().equals("RESTORE")){
+            //TODO: RESTORE
+        }
+        else if (splitMsg.get(0).toUpperCase().equals("DELETE")){
+            //TODO: DELETE
+        }
+        else if (splitMsg.get(0).toUpperCase().equals("SPACE_RECCLAIM")){
+            //TODO: SPACE RECCLAIM
+        }
+
+
+
 
 
     }
@@ -41,7 +72,7 @@ public class Peer {
         return backupListener;
     }
 
-    public static String receiveMessage(){
+    public static byte[] receiveMessage(){
         int port =  1234; //Integer.parseInt(args[1]);
         byte[] receiveData = new byte[256];
 
@@ -60,8 +91,8 @@ public class Peer {
             e.printStackTrace();
         }
 
-        String message = new String(packet.getData());
 
-        return message;
+
+        return packet.getData();
     }
 }

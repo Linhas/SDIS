@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class TestApp {
 	private static String ipAddress;
 	private static int port;
-	private static Integer command;
+	private static String command;
 	private static String operationSpecs;
 	private static DatagramSocket socket = null;
 
@@ -82,13 +82,13 @@ public class TestApp {
 	private static void checkSubProtocol(String com) {
 		String comma= com.toUpperCase();
 		if (comma.equals("BACKUP")){
-			command = 1;
+			command = "BACKUP";
 		} else if (comma.equals("RESTORE")){
-			command = 2;
+			command = "RESTORE";
 		} else if (comma.equals("DELETE")){
-			command = 3;
+			command = "DETELE";
 		} else if(comma.equals("SPACE_RECLAIM")) {
-			command = 4;
+			command = "SPACE_RECCLAIM";
 		} else {
 			System.out.println("Error in command input. Commads accepted: BACKUP, RESTORE, DELETE and SPACE_RECLAIM.");
 		}
