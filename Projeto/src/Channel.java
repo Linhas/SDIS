@@ -27,12 +27,13 @@ public class Channel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        if(ip.equals("localhost")){}
+        else {
         try {
             mcSocket.joinGroup(this.address);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }}
     }
 
     public void send(byte[] message){
