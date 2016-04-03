@@ -34,8 +34,6 @@ public class Listener extends Thread {
 					;
 				else if (name.equals("Initiator"))
 					{
-
-					
 					new Initiator(msg).start();}
 				else
 					System.out.println("Wrong channels!");

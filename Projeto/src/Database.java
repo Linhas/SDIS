@@ -8,6 +8,9 @@ public class Database {
     private ArrayList<Chunk> chunks;
     private HashMap<String, String> files;
 
+    //TODO: Mudar a base de dados.
+    //TODO: A base de dados deve guardar pelo menos o nº de chunks para que o Peer que pede o restore saiba como passar os chunks para um ficheiro.
+
 
     public Database(){
         chunks = new ArrayList<>();

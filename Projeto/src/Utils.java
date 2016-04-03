@@ -21,6 +21,7 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        split.add(aux);
 
         String[] rawHeader = aux.split("\\s+");
 

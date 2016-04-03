@@ -8,16 +8,19 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+
 /**
  * Created by Bernardo on 16/03/2016.
  */
 public class Peer implements Serializable  {
 
-    public static Listener backupListener; 
-    public static Listener restoreListener; 
-    public static Listener controlListener; 
+    public static Listener backupListener;
+    public static Listener restoreListener;
+    public static Listener controlListener;
     private static Listener tryListener;
-    public static Database db;
+    private static Database db;
+
+
 
 
 
@@ -30,6 +33,7 @@ public class Peer implements Serializable  {
     	 //se space recclaim
     	 //se delete
 
+        db = new Database();
 
         controlListener = new Listener("Control", "224.1.1.0", 1000);
         backupListener = new Listener("Backup", "224.1.1.1", 1001);
@@ -41,7 +45,7 @@ public class Peer implements Serializable  {
         backupListener.start();
         restoreListener.start();
         tryListener.start();
- 
+
         save();
 
 
@@ -58,15 +62,15 @@ public class Peer implements Serializable  {
     public static Listener getBackupListener() {
         return backupListener;
     }
-    
+
     public void backupFunction(String fileN, int repDegree){
     	//if file as already been backed up
-    	
+
     	ManageChunk fileToTreat = new ManageChunk(fileN,repDegree );
-    	
+
     	if(fileToTreat.countNumberOfChunks()){
     		fileToTreat.sha256();
-    		
+
     		Chunk[] chunks = null;
 			try {
 				chunks = fileToTreat.getListOfChunks();
@@ -83,12 +87,12 @@ public class Peer implements Serializable  {
     				backupListener.sendMessage();
 				}
     		db.addFile(fileToTreat.getFileId(), fileToTreat.getFileName());
-    		
+
     	}
     }
 
-    public static Listener getTryListener(){
-    	return tryListener;
+    public static Listener getTryListener() {
+        return tryListener;
     }
 
     public synchronized static void save() {
