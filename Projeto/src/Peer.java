@@ -21,7 +21,7 @@ public class Peer implements Serializable  {
     public static Listener restoreListener;
     public static Listener controlListener;
     private static Listener tryListener;
-    public static Database db;
+    private static Database db;
 
 
 
@@ -101,13 +101,16 @@ public class Peer implements Serializable  {
         return backupListener;
     }
 
+    
+
     public static Listener getTryListener() {
         return tryListener;
     }
+    
+  public static Database getDb() {
+	  return db;
+	  }
 
-    public static Database getDb() {
-        return db;
-    }
 
     public synchronized static void save() {
 

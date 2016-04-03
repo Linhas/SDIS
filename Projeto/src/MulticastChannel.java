@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
+import java.net.SocketException;
 
 /**
  * Created by Bernardo on 03/04/2016.
@@ -16,7 +17,14 @@ public class MulticastChannel extends Channel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        /*
+         * descomentar quando for para ignorar as mensagens para mim própria
+         * try {
+			mcSocket.setLoopbackMode(true);
+		} catch (SocketException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}*/
             try {
                 mcSocket.joinGroup(this.address);
             } catch (IOException e) {

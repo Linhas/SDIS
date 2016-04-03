@@ -53,6 +53,8 @@ public class Initiator extends Thread {
 
 		} else if (argumentList.get(0).equals("RESTORE")) {
 			//TODO: mandar para o MC
+			   
+
 
 		} else if (argumentList.get(0).equals("b")) {
 
@@ -64,6 +66,7 @@ public class Initiator extends Thread {
 	
 	 public void backupFunction(String fileN, int repDegree){
 	    	//if file as already been backed up
+		 ArrayList<Chunk> chunks2 = new ArrayList<>();
 	    	
 	    	ManageChunk fileToTreat = new ManageChunk(fileN,repDegree);
 			if(fileToTreat.countNumberOfChunks()){
@@ -80,8 +83,11 @@ public class Initiator extends Thread {
 	    		if(chunks.length > 0){
 	    			for(Chunk chunk : chunks) {
 	    				sendMessage(chunk);
+	    				chunks2.add(chunk);	    				
 					}
-	    		Peer.db.addFile(fileToTreat.getFileId(), new ArrayList<>());
+	    		
+	    			Peer.getDb().addFile(fileToTreat.getFileId(), chunks2);
+
 	    		
 	    			
 	    		}
@@ -103,7 +109,7 @@ public class Initiator extends Thread {
 	    byte[] body;
 
 		
-		String msgHeaderTemp = "PUTCHUNK " + " " + Constants.VERSION + " " + chunk.getFileId() + " " 
+		String msgHeaderTemp = "PUTCHUNK" + " " + Constants.VERSION + " " + chunk.getFileId() + " " 
 							+ chunk.getChunkNo() + " " + chunk.getReplicationDeg() + " " 
 							+ Constants.CRLF + Constants.CRLF;
 		//porque a porra do arraycopy tava a falhar
@@ -133,10 +139,10 @@ public class Initiator extends Thread {
 		}
 
 		message = outputStream.toByteArray( );
-
 		DatagramPacket dataPacket = new DatagramPacket(message, message.length, Peer.backupListener.getAddress(), Peer.backupListener.getPort());
 		
-		Peer.controlListener.channel.send(message);
+		
+		Peer.backupListener.channel.send(message);
 	
 	}
 	

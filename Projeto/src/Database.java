@@ -6,11 +6,15 @@ import java.util.HashMap;
  * Created by Bernardo on 03/04/2016.
  */
 public class Database implements Serializable   {
-    private ArrayList<Chunk> chunksSaved;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private ArrayList<Chunk> chunksSaved;
     private HashMap<String, ArrayList<Chunk>> backedUpFiles;
 
     //TODO: Mudar a base de dados.
-    //TODO: A base de dados deve guardar pelo menos o nÂº de chunksSaved para que o Peer que pede o restore saiba como passar os chunksSaved para um ficheiro.
+    //TODO: A base de dados deve guardar pelo menos o nº de chunksSaved para que o Peer que pede o restore saiba como passar os chunksSaved para um ficheiro.
 
 
     public Database(){

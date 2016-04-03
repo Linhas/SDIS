@@ -43,15 +43,15 @@ public class Backup extends Thread{
         for(String field : rawHeader){
             header.add(field.trim());
         }
-
+        
         if (header.get(0).equals("PUTCHUNK")){
             if (header.get(1).equals(Constants.VERSION)){
 
                 //get body (message-header)
                 System.out.println("TESTING!!!!!");
                 byte[] body = Arrays.copyOfRange(message, aux.length()+4, message.length);
-                System.out.println("body: "+ new String(body));
-
+                //System.out.println("body: "+ new String(body));
+                
             }
 
         }
