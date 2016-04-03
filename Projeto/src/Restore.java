@@ -20,7 +20,7 @@ public class Restore extends Thread {
         if (header.get(0).equals("CHUNK")){
             if (header.get(1).equals(Constants.VERSION)){
                 byte[] body = Arrays.copyOfRange(message, aux.length()+4, message.length);
-                Chunk chunk = new Chunk(Integer.parseInt(header.get(2)), header.get(3), Integer.parseInt(header.get(4)), Integer.parseInt(header.get(5)), body);
+                Chunk chunk = new Chunk(header.get(3), Integer.parseInt(header.get(4)), Integer.parseInt(header.get(5)), body);
 
 
 
