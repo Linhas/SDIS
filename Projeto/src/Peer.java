@@ -101,10 +101,12 @@ public class Peer implements Serializable  {
         return backupListener;
     }
 
-    
-
     public static Listener getTryListener() {
         return tryListener;
+    }
+
+    public static Database getDb() {
+        return db;
     }
 
     public synchronized static void save() {

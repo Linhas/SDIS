@@ -51,7 +51,8 @@ public class Initiator extends Thread {
 				e.printStackTrace();
 			}
 
-		} else if (argumentList.get(0).equals("a")) {
+		} else if (argumentList.get(0).equals("RESTORE")) {
+			//TODO: mandar para o MC
 
 		} else if (argumentList.get(0).equals("b")) {
 
@@ -80,7 +81,7 @@ public class Initiator extends Thread {
 	    			for(Chunk chunk : chunks) {
 	    				sendMessage(chunk);
 					}
-	    		Peer.db.addFile(fileToTreat.getFileId(), fileToTreat.getFileName());
+	    		Peer.db.addFile(fileToTreat.getFileId(), new ArrayList<>());
 	    		
 	    			
 	    		}

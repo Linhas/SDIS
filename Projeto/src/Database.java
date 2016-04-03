@@ -6,44 +6,60 @@ import java.util.HashMap;
  * Created by Bernardo on 03/04/2016.
  */
 public class Database implements Serializable   {
-    private ArrayList<Chunk> chunks;
-    private HashMap<String, String> files;
+    private ArrayList<Chunk> chunksSaved;
+    private HashMap<String, ArrayList<Chunk>> backedUpFiles;
 
     //TODO: Mudar a base de dados.
-    //TODO: A base de dados deve guardar pelo menos o nº de chunks para que o Peer que pede o restore saiba como passar os chunks para um ficheiro.
+    //TODO: A base de dados deve guardar pelo menos o nº de chunksSaved para que o Peer que pede o restore saiba como passar os chunksSaved para um ficheiro.
 
 
     public Database(){
-        chunks = new ArrayList<>();
-        files = new HashMap<>();
+        chunksSaved = new ArrayList<>();
+        backedUpFiles = new HashMap<>();
     }
 
-    public synchronized void addFile(String fileHash, String filename){
-        files.put(fileHash, filename);
+    public synchronized void addFile(String fileHash, ArrayList<Chunk> chunks){
+        backedUpFiles.put(fileHash, chunks);
     }
 
-    public synchronized String getFile(String fileHash){
-        return files.get(fileHash);
+    public synchronized ArrayList<Chunk> getBackedUpChunks(String fileHash){
+        return backedUpFiles.get(fileHash);
     }
 
     public synchronized void removeFile(String fileHash){
-        files.remove(fileHash);
+        backedUpFiles.remove(fileHash);
     }
 
     public synchronized void removeChunk(String fileId, int chunkNo){
-        for(int i = 0; i < chunks.size(); i++){
-            if ((chunks.get(i).getFileId().equals(fileId)) && (chunks.get(i).getChunkNo() == chunkNo)){
-                chunks.remove(i);
+        for(int i = 0; i < chunksSaved.size(); i++){
+            if ((chunksSaved.get(i).getFileId().equals(fileId)) && (chunksSaved.get(i).getChunkNo() == chunkNo)){
+                chunksSaved.remove(i);
                 break;
             }
         }
     }
 
-    public synchronized void addChunk(Chunk chunk) {
-        chunks.add(chunk);
+    public synchronized int getNrOfChunksSaved(String fileHash){
+        return getBackedUpChunks(fileHash).size();
     }
 
-    public ArrayList<Chunk> getChunks() {
-        return chunks;
+    public synchronized void addChunk(Chunk chunk) {
+        chunksSaved.add(chunk);
+    }
+
+    public ArrayList<Chunk> getChunksSaved() {
+        return chunksSaved;
+    }
+
+    public synchronized boolean findChunk(String fileHash, int chunkNo){
+        boolean found = false;
+        ArrayList<Chunk> chunks = getBackedUpChunks(fileHash);
+
+        for(int i = 0; i<chunks.size(); i++){
+            if (chunks.get(i).getChunkNo() == chunkNo)
+                return true;
+        }
+
+        return false;
     }
 }
