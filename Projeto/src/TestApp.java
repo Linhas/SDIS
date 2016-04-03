@@ -108,7 +108,7 @@ public class TestApp {
 	private static void sendMessage() {
 
 
-		//Se tiver de ir para um MDB multicast data channel isto também está mal
+		//Se tiver de ir para um MDB multicast data channel isto tambem esta mal
 		//eheh
 		System.out.println("(>^.^)> ");
 		System.out.printf("\nTestApp sending command %s, %s to IP address %s - Port number %d\n", command, operationSpecs, ipAddress, port);
@@ -130,7 +130,7 @@ public class TestApp {
 
 		byte[] message = new byte[256];
 
-		message = (command + " " + operationSpecs + Constants.CRLF).getBytes();
+		message = (command + " " + operationSpecs + Constants.CRLF + Constants.CRLF).getBytes();
 
 		DatagramPacket packet = new DatagramPacket(message, message.length, address, port);
 		try {

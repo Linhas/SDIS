@@ -22,15 +22,16 @@ public class ManageChunk {
 	public ManageChunk(String fileName, int repDegree) {
 		this.repDegree = repDegree;
 		this.fileName = fileName;
+		file = new File(fileName);
 	}
 /*
  * Counts number of chunks in a file by dividing file
  */
 	public boolean countNumberOfChunks(){
 		
-		if(file.exists() && !file.isDirectory()) { 
-		    System.out.printf("The File %s does not exist or abstract pathname is a directory.", fileName);
-		    return false;
+		if(!file.isFile()){
+			System.out.printf("Something is wrong with this file %s Are you sure it exits?", fileName);
+			return false;
 		}
 	fileSize = file.length();
 	numberOfChunks = (int) (fileSize/Constants.CHUNKSIZE) +1;
@@ -58,13 +59,13 @@ public class ManageChunk {
 				
 				if(chunkSize == 0){
 					//(String idFile, int chunkn, int repliDeg, byte[] data)
-					Chunk chunk = new Chunk(id, fileId, i, repDegree, null);
+					Chunk chunk = new Chunk(fileId, i, repDegree, null);
 					totalChunks[i]= chunk;
 				}
 				else{
 					data = new byte[chunkSize];
 					int dataSize = fileStream.read(data);
-					Chunk chunk = new Chunk(id, fileId, i, repDegree, data);
+					Chunk chunk = new Chunk(fileId, i, repDegree, data);
 					totalChunks[i]= chunk;
 					totalSize += dataSize;
 				}
@@ -75,7 +76,7 @@ public class ManageChunk {
 		}
 		
 		
-		return null;
+		return totalChunks;
 	}
 
 /*

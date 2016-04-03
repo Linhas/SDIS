@@ -23,7 +23,7 @@ public class Chunk {
 	private ArrayList<String> peers;
 
 	
-	public Chunk(int id, String idFile, int chunkn, int repliDeg, byte[] data){
+	public Chunk(String idFile, int chunkn, int repliDeg, byte[] data){
 		setFileId(idFile);
 		setChunkNo(chunkn);
 		setReplicationDeg(repliDeg);

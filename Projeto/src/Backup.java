@@ -64,28 +64,6 @@ public class Backup extends Thread{
     	
     }
 
-    public void sendMessage() {
-		System.out.println("Hello there");
-		System.out.println("Sending chunk: " + chunk.getId());
-		byte[] msg, msgHeader;
 
-		
-		String msgHeaderTemp = "PUTCHUNK " + Constants.VERSION + " " + chunk.getFileId() + " " 
-							+ chunk.getId() + " " + chunk.getReplicationDeg() + " " 
-							+ Constants.CRLF + Constants.CRLF;
-		msgHeader = msgHeaderTemp.getBytes();
-		body = chunk.getData();
-		msg = new byte[msgHeader.length + body.length];
-		
-		// copy data from one array into another:
-		System.arraycopy(msgHeader, 0, message, 0, msgHeader.length);
-		
-		System.arraycopy(body , 0, message, msgHeader.length, body.length);
-		
-	//	DatagramPacket dataPacket = new DatagramPacket(message, message.length, Peer.backupListener.getAddress(), Peer.backupListener.getPort());
-		
-		Peer.backupListener.channel.send(message);
-	
-	}
 
 }
