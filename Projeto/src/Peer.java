@@ -69,8 +69,6 @@ public class Peer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Hello");
-       
         return packet.getData();
     }*/
 }

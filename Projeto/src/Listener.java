@@ -6,8 +6,12 @@ public class Listener extends Thread {
 	private String name;
 
 	public Listener(String name, String ip, Integer port) {
+
 		this.name = name;
-		channel = new Channel(ip, port);
+		if (name.equals("Initiator"))
+            channel = new UDPChannel(ip, port);
+        else
+            channel = new MulticastChannel(ip, port);
 	}
 
 	public void run() {
