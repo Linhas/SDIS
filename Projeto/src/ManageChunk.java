@@ -7,7 +7,7 @@ import java.security.MessageDigest;
 
 public class ManageChunk {
 
-	private static String fileName;
+	private String fileName;
 
 	private int repDegree;
 	private String fileId;
@@ -26,13 +26,15 @@ public class ManageChunk {
 /*
  * Counts number of chunks in a file by dividing file
  */
-	public void countNumberOfChunks(){
+	public boolean countNumberOfChunks(){
 		
 		if(file.exists() && !file.isDirectory()) { 
 		    System.out.printf("The File %s does not exist or abstract pathname is a directory.", fileName);
+		    return false;
 		}
 	fileSize = file.length();
 	numberOfChunks = (int) (fileSize/Constants.CHUNKSIZE) +1;
+	return true;
 	}
 	
 /*
@@ -128,4 +130,9 @@ public class ManageChunk {
 		}
 		
 	} 
+
+public String getFileName(){
+	return fileName;
+}
+
 }

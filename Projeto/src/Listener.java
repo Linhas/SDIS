@@ -1,3 +1,5 @@
+import java.net.InetAddress;
+
 /**
  * Created by Bernardo on 24/03/2016.
  */
@@ -44,4 +46,22 @@ public class Listener extends Thread {
 	public void send(byte[] message) {
 		channel.send(message);
 	}
+
+	public void sendMessage() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	 public InetAddress getAddress() {
+	        return channel.getAddress();
+	    }
+	 public int getPort(){
+		 
+		 return channel.getPort();
+	 }
+	public void setChunk(Chunk chunk) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

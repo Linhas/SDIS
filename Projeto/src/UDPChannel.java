@@ -13,7 +13,7 @@ public class UDPChannel extends Channel {
 
     public UDPChannel(String ip, Integer port) {
         super(ip, port);
-
+        
         try {
             dSocket = new DatagramSocket(port);
         } catch (SocketException e) {
