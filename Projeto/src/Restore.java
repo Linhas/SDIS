@@ -22,8 +22,9 @@ public class Restore extends Thread {
                 byte[] body = Arrays.copyOfRange(message, aux.length()+4, message.length);
                 Chunk chunk = new Chunk(header.get(3), Integer.parseInt(header.get(4)), Integer.parseInt(header.get(5)), body);
 
-
-
+                if (!(Peer.getDb().findChunk(chunk.getFileId(), chunk.getChunkNo()))) {
+                    Peer.getDb().addChunk(chunk);
+                }
             }
         }
 
