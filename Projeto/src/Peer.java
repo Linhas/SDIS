@@ -10,7 +10,13 @@ import java.util.ArrayList;
  */
 public class Peer {
 
-    private static Listener backupListener, restoreListener, controlListener, tryListener;
+    private static Listener backupListener;
+    private static Listener restoreListener;
+    private static Listener controlListener;
+
+    private static Listener tryListener;
+
+
 
 
 
@@ -50,25 +56,8 @@ public class Peer {
     public static Listener getBackupListener() {
         return backupListener;
     }
-/*
-    public static byte[] receiveMessage(){
-        int port =  1234; //Integer.parseInt(args[1]);
-        byte[] receiveData = new byte[256];
 
-        DatagramSocket socket = null;
-        
-        try {
-            socket = new DatagramSocket(port);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-
-        DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);
-        try {
-            socket.receive(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return packet.getData();
-    }*/
+    public static Listener getTryListener() {
+        return tryListener;
+    }
 }
