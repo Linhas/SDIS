@@ -1,11 +1,10 @@
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
 import java.util.ArrayList;
 
 
@@ -14,11 +13,15 @@ import java.util.ArrayList;
  */
 public class Peer implements Serializable  {
 
-    public static Listener backupListener;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public static Listener backupListener;
     public static Listener restoreListener;
     public static Listener controlListener;
     private static Listener tryListener;
-    private static Database db;
+    public static Database db;
 
 
 
@@ -33,8 +36,9 @@ public class Peer implements Serializable  {
     	 //se space recclaim
     	 //se delete
 
-        db = new Database();
-
+   //     db = new Database();
+        load();
+        
         controlListener = new Listener("Control", "224.1.1.0", 1000);
         backupListener = new Listener("Backup", "224.1.1.1", 1001);
         restoreListener = new Listener("Restore", "224.1.1.2", 1002);
@@ -51,7 +55,41 @@ public class Peer implements Serializable  {
 
     }
 
-    public static Listener getRestoreListener() {
+    
+    private static void load() {
+
+        ObjectInputStream load = null;
+        Boolean newDatabase = false;
+
+        try {
+            load = new ObjectInputStream(new FileInputStream("db.dbs"));
+        } catch (FileNotFoundException e) {
+            db = new Database();
+            newDatabase  = true;
+        } catch (IOException e) {
+            System.err.println("Error creating database.dbs");
+            e.printStackTrace();
+        }
+
+        if (!newDatabase ) {
+
+            try {
+                assert load != null;
+                db = (Database) load.readObject();
+                System.out.println("Loaded Database");
+            } catch (ClassNotFoundException e) {
+                System.err.println("There is no database!");
+                e.printStackTrace();
+            } catch (IOException e) {
+                System.err.println("Error loading information!");
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+	public static Listener getRestoreListener() {
         return restoreListener;
     }
 
@@ -63,33 +101,7 @@ public class Peer implements Serializable  {
         return backupListener;
     }
 
-    public void backupFunction(String fileN, int repDegree){
-    	//if file as already been backed up
-
-    	ManageChunk fileToTreat = new ManageChunk(fileN,repDegree );
-
-    	if(fileToTreat.countNumberOfChunks()){
-    		fileToTreat.sha256();
-
-    		Chunk[] chunks = null;
-			try {
-				chunks = fileToTreat.getListOfChunks();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    		if(chunks.length == 0){
-    			System.out.println("This wont do. There are no chunks to Backup");
-    		}
-    		else
-    			for(Chunk chunk : chunks) {
-    				backupListener.setChunk(chunk);
-    				backupListener.sendMessage();
-				}
-    		db.addFile(fileToTreat.getFileId(), fileToTreat.getFileName());
-
-    	}
-    }
+    
 
     public static Listener getTryListener() {
         return tryListener;
@@ -113,7 +125,7 @@ public class Peer implements Serializable  {
             assert save != null;
             save.writeObject(db);
         } catch (IOException e) {
-            System.err.println("Error saving database");
+            System.err.println("Error saving infomation");
             e.printStackTrace();
         }
     }

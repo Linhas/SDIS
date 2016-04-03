@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.DatagramPacket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -17,6 +18,7 @@ public class Backup extends Thread{
     private ArrayList<String> header;
     private byte[] body;
 	private Chunk  chunk;
+
 
     public Backup(byte[] message){
         this.message = message;
@@ -80,8 +82,9 @@ public class Backup extends Thread{
 		
 		System.arraycopy(body , 0, message, msgHeader.length, body.length);
 		
-		DatagramPacket dataPacket = new DatagramPacket(message, message.length, Peer.backupListener.getAddress(), Peer.backupListener.getPort());
+	//	DatagramPacket dataPacket = new DatagramPacket(message, message.length, Peer.backupListener.getAddress(), Peer.backupListener.getPort());
 		
+		Peer.backupListener.channel.send(message);
 	
 	}
 

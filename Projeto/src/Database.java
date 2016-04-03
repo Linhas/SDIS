@@ -1,10 +1,11 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Created by Bernardo on 03/04/2016.
  */
-public class Database {
+public class Database implements Serializable   {
     private ArrayList<Chunk> chunks;
     private HashMap<String, String> files;
 

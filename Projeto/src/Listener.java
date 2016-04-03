@@ -4,7 +4,7 @@ import java.net.InetAddress;
  * Created by Bernardo on 24/03/2016.
  */
 public class Listener extends Thread {
-	private Channel channel;
+	protected Channel channel;
 	private String name;
 
 	public Listener(String name, String ip, Integer port) {
