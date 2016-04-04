@@ -40,7 +40,7 @@ public class Initiator extends Thread {
 		if (argumentList.get(0).equals("BACKUP")) {
 			
 			System.out.println("Hey jude, don't let you down");
-			
+
 			fileToTreat = new ManageChunk(argumentList.get(1), Integer.parseInt(argumentList.get(2)));
 			backupFunction(argumentList.get(1), Integer.parseInt(argumentList.get(2)));
 			try {
@@ -65,14 +65,14 @@ public class Initiator extends Thread {
 	
 	 public void backupFunction(String fileN, int repDegree){
 	    	//if file as already been backed up
-		
+		 ArrayList<Chunk> chunks2 = new ArrayList<>();
 	    	
 	    	ManageChunk fileToTreat = new ManageChunk(fileN,repDegree);
 			if(fileToTreat.countNumberOfChunks()){
 	    		fileToTreat.sha256();
 	    		
 	    		ArrayList<Chunk> chunks = null;
-				
+
 				try {
 					chunks = fileToTreat.getListOfChunks();
 				} catch (IOException e) {
@@ -88,9 +88,9 @@ public class Initiator extends Thread {
 	    				while(Peer.getDb().getBackedUpChunks(chunk.getFileId()).get(chunk.getChunkNo()).getCurrentRepDeg()< repDegree){
 	    				sendMessageBackup(chunk);
 	    				receiveAnswerBackup(chunk);
-	    				
+
 					}
-	
+
 	    		}}
 	    		else
 	    		{
@@ -102,9 +102,9 @@ public class Initiator extends Thread {
 	public byte[] getMessage() {
 		return message;
 	}
-	
+
 	public void receiveAnswerBackup(Chunk chunk){
-		
+
 		chunk.incCurrentRepDeg();
 	}
 
@@ -115,7 +115,7 @@ public class Initiator extends Thread {
 	    byte[] body;
 
 		
-		String msgHeaderTemp = "PUTCHUNK" + " " + Constants.VERSION + " " + this.getId() + " "+ chunk.getFileId() + " " 
+		String msgHeaderTemp = "PUTCHUNK" + " " + Constants.VERSION + " " + this.getId() + " "+ chunk.getFileId() + " "
 							+ chunk.getChunkNo() + " " + chunk.getReplicationDeg() + " " 
 							+ Constants.CRLF + Constants.CRLF;
 		//porque a porra do arraycopy tava a falhar
