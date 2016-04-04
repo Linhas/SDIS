@@ -24,6 +24,8 @@ public class Listener extends Thread {
 		while (true) {
 			msg = channel.receive();
 			if (msg != null) {
+				System.out.println("Received: " + new String(msg));
+
 				if (name.equals("Control"))
 					new Control(msg).start();
 				else if (name.equals("Backup"))

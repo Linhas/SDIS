@@ -49,7 +49,7 @@ public class Backup extends Thread{
                 if (!(Peer.getDb().findSavedChunk(chunk.getFileId(), chunk.getChunkNo()))) {
                     Peer.getDb().addChunk(chunk);
 
-                    String mssg = "STORED" + " " + Constants.VERSION + " 123 " + header.get(3) + " " + header.get(4) + Constants.CRLF + Constants.CRLF;
+                    String msg = "STORED" + " " + Constants.VERSION + " 123 " + header.get(3) + " " + header.get(4) + Constants.CRLF + Constants.CRLF;
 
                     Random r = new Random();
                     int time = r.nextInt(401);
@@ -59,7 +59,8 @@ public class Backup extends Thread{
                         e.printStackTrace();
                     }
 
-                    Peer.getControlListener().send(mssg.getBytes());
+                    Peer.getControlListener().send(msg.getBytes());
+                    System.out.println("Sent: " + msg);
                 }
 
 
