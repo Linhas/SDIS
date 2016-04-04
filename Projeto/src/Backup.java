@@ -50,6 +50,12 @@ public class Backup extends Thread{
                 //get body (message-header)
                 System.out.println("TESTING!!!!!");
                 byte[] body = Arrays.copyOfRange(message, aux.length()+4, message.length);
+                Chunk chunk = new Chunk(header.get(3), Integer.parseInt(header.get(4)), Integer.parseInt(header.get(5)), body);
+
+                if (!(Peer.getDb().findSavedChunk(chunk.getFileId(), chunk.getChunkNo()))) {
+                    Peer.getDb().addChunk(chunk);
+                    
+                }
                 //System.out.println("body: "+ new String(body));
                 
             }

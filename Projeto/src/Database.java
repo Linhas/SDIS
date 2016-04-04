@@ -14,7 +14,7 @@ public class Database implements Serializable   {
     private HashMap<String, ArrayList<Chunk>> backedUpFiles;
 
     //TODO: Mudar a base de dados.
-    //TODO: A base de dados deve guardar pelo menos o nº de chunksSaved para que o Peer que pede o restore saiba como passar os chunksSaved para um ficheiro.
+    //TODO: A base de dados deve guardar pelo menos o numero de chunksSaved para que o Peer que pede o restore saiba como passar os chunksSaved para um ficheiro.
 
 
     public Database(){
@@ -65,5 +65,16 @@ public class Database implements Serializable   {
         }
 
         return false;
+    }
+    
+    public synchronized boolean findSavedChunk(String fileid, int chunkNo){
+    	for (int i = 0; i < chunksSaved.size(); i++){
+    		if (chunksSaved.get(i).getFileId() == fileid && chunksSaved.get(i).getChunkNo() == chunkNo ){
+    	    	return true;
+    		}
+    	}
+
+		return false;
+    	
     }
 }

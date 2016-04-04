@@ -11,6 +11,7 @@ public class Chunk {
 	private int chunkNo;
 	private String fileId;
 	private int id;
+	private int currentRepD;
 	
 	private int replicationDeg;
 	
@@ -28,11 +29,24 @@ public class Chunk {
 		setChunkNo(chunkn);
 		setReplicationDeg(repliDeg);
 		setPeers(new ArrayList<String>());
+		this.currentRepD = 0;
+		
 		
 		this.setData(data);
 	}
 	
+	public void incCurrentRepDeg(){
+		currentRepD++;
+	}
+	
 
+	public void decCurrentRepDeg(){
+		currentRepD--;
+	}
+	
+	public int getCurrentRepDeg(){
+		return currentRepD;
+	}
 	public int getChunkNo() {
 		return chunkNo;
 	}

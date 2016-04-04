@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 
 public class ManageChunk {
 
@@ -41,9 +42,9 @@ public class ManageChunk {
 /*
  * Get list of chunks so they can be sent
  */
-	public Chunk[] getListOfChunks() throws IOException{
+	public ArrayList<Chunk> getListOfChunks() throws IOException{
 		
-		Chunk[] totalChunks = new Chunk[numberOfChunks];
+		ArrayList<Chunk> totalChunks = new ArrayList<Chunk>(numberOfChunks);
 		FileInputStream fileStream = null;
 		byte[] data;
 		
@@ -60,13 +61,13 @@ public class ManageChunk {
 				if(chunkSize == 0){
 					//(String idFile, int chunkn, int repliDeg, byte[] data)
 					Chunk chunk = new Chunk(fileId, i, repDegree, null);
-					totalChunks[i]= chunk;
+					totalChunks.add(chunk);
 				}
 				else{
 					data = new byte[chunkSize];
 					int dataSize = fileStream.read(data);
 					Chunk chunk = new Chunk(fileId, i, repDegree, data);
-					totalChunks[i]= chunk;
+					totalChunks.add(chunk);
 					totalSize += dataSize;
 				}
 			} 

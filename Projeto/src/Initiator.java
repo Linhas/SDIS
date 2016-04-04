@@ -40,8 +40,7 @@ public class Initiator extends Thread {
 		if (argumentList.get(0).equals("BACKUP")) {
 			
 			System.out.println("Hey jude, don't let you down");
-			System.out.println(argumentList.get(1));
-			System.out.println(argumentList.get(2));
+			
 			fileToTreat = new ManageChunk(argumentList.get(1), Integer.parseInt(argumentList.get(2)));
 			backupFunction(argumentList.get(1), Integer.parseInt(argumentList.get(2)));
 			try {
@@ -66,31 +65,33 @@ public class Initiator extends Thread {
 	
 	 public void backupFunction(String fileN, int repDegree){
 	    	//if file as already been backed up
-		 ArrayList<Chunk> chunks2 = new ArrayList<>();
+		
 	    	
 	    	ManageChunk fileToTreat = new ManageChunk(fileN,repDegree);
 			if(fileToTreat.countNumberOfChunks()){
 	    		fileToTreat.sha256();
 	    		
-	    		Chunk[] chunks = null;
+	    		ArrayList<Chunk> chunks = null;
+				
 				try {
 					chunks = fileToTreat.getListOfChunks();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				Peer.getDb().addFile(fileToTreat.getFileId(), chunks);
 
-	    		if(chunks.length > 0){
+
+	    		if(chunks.size() > 0){
 	    			for(Chunk chunk : chunks) {
-	    				sendMessage(chunk);
-	    				chunks2.add(chunk);	    				
+	    				//TODO: NAO ESQUECER TENTATIVAS
+	    				while(Peer.getDb().getBackedUpChunks(chunk.getFileId()).get(chunk.getChunkNo()).getCurrentRepDeg()< repDegree){
+	    				sendMessageBackup(chunk);
+	    				receiveAnswerBackup(chunk);
+	    				
 					}
-	    		
-	    			Peer.getDb().addFile(fileToTreat.getFileId(), chunks2);
-
-	    		
-	    			
-	    		}
+	
+	    		}}
 	    		else
 	    		{
 	    			System.out.println("This wont do. There are no chunks to Backup");
@@ -101,15 +102,20 @@ public class Initiator extends Thread {
 	public byte[] getMessage() {
 		return message;
 	}
+	
+	public void receiveAnswerBackup(Chunk chunk){
+		
+		chunk.incCurrentRepDeg();
+	}
 
 	
-    public void sendMessage(Chunk chunk) {
+    public void sendMessageBackup(Chunk chunk) {
 		System.out.println("Sending chunk: " + chunk.getChunkNo());
 		byte[] msg, msgHeader;
 	    byte[] body;
 
 		
-		String msgHeaderTemp = "PUTCHUNK" + " " + Constants.VERSION + " " + chunk.getFileId() + " " 
+		String msgHeaderTemp = "PUTCHUNK" + " " + Constants.VERSION + " " + this.getId() + " "+ chunk.getFileId() + " " 
 							+ chunk.getChunkNo() + " " + chunk.getReplicationDeg() + " " 
 							+ Constants.CRLF + Constants.CRLF;
 		//porque a porra do arraycopy tava a falhar
