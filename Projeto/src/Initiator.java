@@ -57,6 +57,9 @@ public class Initiator extends Thread {
 		} else if (argumentList.get(0).equals("SPACE_RECLAIM")) {
 
 		}
+		else if (argumentList.get(0).equals("EXIT")){
+			Peer.shutdown();
+		}
 
 	}
 

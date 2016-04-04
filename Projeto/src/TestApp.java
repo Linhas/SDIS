@@ -17,58 +17,15 @@ public class TestApp {
 
 	public static void main(String argv[]) throws Exception {
 
-
-
 		if (argv.length < 3) {
 			System.out.println("Usage: <peer_ap> <sub_protocol> <opnd_1> <opnd_2>");
 		}
 		splitPeerApp(argv[0]);
-
-
 		checkSubProtocol(argv[1]);
 		concat(argv);
-		
 
 		sendMessage();
-		
-		
-		//waitForAnswer(command);
-
-
-		
 	}
-	/*
-	private static void waitForAnswer(Integer command2) {
-		switch (command2){
-		case 1:
-			backupListener = new Listener("Backup", ipAddress, port);
-			backupListener.start();
-			boolean waiting = true;
-			while(waiting){
-				System.out.println("He did receive");
-				waiting = false;
-			}
-			System.exit(0);
-			//PUTCHUNK <Version> <SenderId> <FileId> <ChunkNo> <ReplicationDeg> <CRLF><CRLF><Body>
-			//ficar a ouvir o backup
-			break;
-		case 2:
-			restoreListener = new Listener("Restore", "224.1.1.2", 1002);
-	        restoreListener.start();
-			//GETCHUNK <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>
-			// Ficar a ouvir o restore
-			break;
-		case 3:
-			//DELETE <Version> <SenderId> <FileId> <CRLF><CRLF>
-			break;
-		case 4:
-			//REMOVED <Version> <SenderId> <FileId> <ChunkNo> <CRLF><CRLF>
-			break;
-		
-		}
-		
-	}
-	*/
 
 	private static void concat(String[] argv) {
 		StringBuffer result = new StringBuffer();
