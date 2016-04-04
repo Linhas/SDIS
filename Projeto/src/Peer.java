@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -22,7 +24,7 @@ public class Peer implements Serializable  {
     public static Listener controlListener;
     private static Listener tryListener;
     private static Database db;
-
+    private static ExecutorService executor;
 
 
 
@@ -37,7 +39,11 @@ public class Peer implements Serializable  {
     	 //se delete
 
    //     db = new Database();
-        load();
+        loadDb();
+
+        executor = Executors.newFixedThreadPool(12);
+
+
         
         controlListener = new Listener("Control", "224.1.1.0", 1000);
         backupListener = new Listener("Backup", "224.1.1.1", 1001);
@@ -45,18 +51,16 @@ public class Peer implements Serializable  {
         tryListener = new Listener("Initiator", "localhost", 1234);
         
 
-        controlListener.start();
-        backupListener.start();
-        restoreListener.start();
-        tryListener.start();
-
-        save();
+        executor.submit(controlListener);
+        executor.submit(backupListener);
+        executor.submit(restoreListener);
+        executor.submit(tryListener);
 
 
     }
 
     
-    private static void load() {
+    private static void loadDb() {
 
         ObjectInputStream load = null;
         Boolean newDatabase = false;
@@ -112,7 +116,7 @@ public class Peer implements Serializable  {
 	  }
 
 
-    public synchronized static void save() {
+    public synchronized static void saveDb() {
 
         ObjectOutputStream save = null;
 
@@ -133,5 +137,23 @@ public class Peer implements Serializable  {
             System.err.println("Error saving infomation");
             e.printStackTrace();
         }
+    }
+
+    public static ExecutorService getExecutor() {
+        return executor;
+    }
+
+
+    public static void shutdown(){
+
+        executor.shutdown();
+
+        try {
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        saveDb();
     }
 }

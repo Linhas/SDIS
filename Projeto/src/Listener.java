@@ -27,14 +27,14 @@ public class Listener extends Thread {
 				System.out.println("Received: " + new String(msg));
 
 				if (name.equals("Control"))
-					new Control(msg).start();
+					Peer.getExecutor().submit(new Control(msg));
 				else if (name.equals("Backup"))
-					new Backup(msg).start();
+					Peer.getExecutor().submit(new Backup(msg));
 				else if (name.equals("Restore"))
 					// TODO: Restore
 					;
 				else if (name.equals("Initiator"))
-					new Initiator(msg).start();
+					Peer.getExecutor().submit(new Initiator(msg));
 				else
 					System.out.println("Wrong channels!");
 			}
