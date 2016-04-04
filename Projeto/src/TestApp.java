@@ -46,7 +46,9 @@ public class TestApp {
 			command = "DELETE";
 		} else if(comma.equals("SPACE_RECLAIM")) {
 			command = "SPACE_RECLAIM";
-		} else {
+		} else if(comma.equals("EXIT")){
+			command = "EXIT";
+		}else {
 			System.out.println("Error in command input. Commads accepted: BACKUP, RESTORE, DELETE and SPACE_RECLAIM.");
 		}
 	}

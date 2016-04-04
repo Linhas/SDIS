@@ -46,36 +46,53 @@ public class Initiator extends Thread {
 			}
 
 		} else if (argumentList.get(0).equals("RESTORE")) {
-			//TODO: mandar para o MC
-			   
-
+			String hash = Peer.getDb().getFileHash(argumentList.get(1));
+			restoreFunction(argumentList.get(1), hash);
 
 		} else if (argumentList.get(0).equals("DELETE")) {
 			String hash = Peer.getDb().getFileHash(argumentList.get(1));
 			sendMessageDelete(hash);
-			
+
 		} else if (argumentList.get(0).equals("SPACE_RECLAIM")) {
 
-		}
-		else if (argumentList.get(0).equals("EXIT")){
+		} else if (argumentList.get(0).equals("EXIT")) {
 			Peer.shutdown();
+			sendMessageShutdown();
 		}
 
 	}
 
+	private void sendMessageShutdown() {
+		byte[] msgHeader;
+		String msgHeaderTemp = "EXIT" + " " + Constants.VERSION + " " + this.getId() + " " + Constants.CRLF
+				+ Constants.CRLF;
+		msgHeader = msgHeaderTemp.getBytes(StandardCharsets.US_ASCII);
+
+		message = msgHeader;
+
+		for (int i = 0; i < 5; i++) {
+			Peer.controlListener.channel.send(message);
+
+			try {
+				sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
 	private void sendMessageDelete(String hash) {
 		byte[] msgHeader;
-		String msgHeaderTemp = "DELETE" + " " + Constants.VERSION + " " + this.getId() + " "+ hash  + " " 
+		String msgHeaderTemp = "DELETE" + " " + Constants.VERSION + " " + this.getId() + " " + hash + " "
 				+ Constants.CRLF + Constants.CRLF;
-		System.out.println(hash);
 		msgHeader = msgHeaderTemp.getBytes(StandardCharsets.US_ASCII);
-		
+
 		message = msgHeader;
-		
-		for (int i = 0; i< 5; i++){
+
+		for (int i = 0; i < 5; i++) {
 			Peer.controlListener.channel.send(message);
-			 
+
 			try {
 				sleep(500);
 			} catch (InterruptedException e) {
@@ -83,9 +100,36 @@ public class Initiator extends Thread {
 				e.printStackTrace();
 			}
 		}
-		
-		
 
+	}
+
+	private void restoreFunction(String filename, String hash) {
+		ManageChunk fileToTreat = new ManageChunk(filename);
+		ArrayList<Chunk> listToFind;
+		listToFind = Peer.getDb().getBackedUpChunks(hash);
+		for (Chunk chunk : listToFind) {
+			sendMessageRestore(chunk, hash);
+		}
+	}
+
+	private void sendMessageRestore(Chunk chunk, String hash) {
+		byte[] msgHeader;
+		String msgHeaderTemp = "GETCHUNK" + " " + Constants.VERSION + " " + this.getId() + " "+ hash + " " 
+		+ chunk.getChunkNo()+ " " + Constants.CRLF + Constants.CRLF;
+		msgHeader = msgHeaderTemp.getBytes(StandardCharsets.US_ASCII);
+				
+				message = msgHeader;
+				
+				for (int i = 0; i< 5; i++){
+					Peer.restoreListener.channel.send(message);
+					 
+					try {
+						sleep(500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}	
 	}
 
 	public void backupFunction(String fileN, int repDegree) {
@@ -105,12 +149,12 @@ public class Initiator extends Thread {
 			Peer.getDb().addFile(fileToTreat.getFileId(), chunks);
 			Peer.getDb().addFileMap(fileToTreat.getFileId(), fileToTreat.getFileName());
 
-
 			if (chunks.size() > 0) {
 				for (Chunk chunk : chunks) {
 					tries = 0;
 					int time = 500;
-					while (Peer.getDb().getBackedUpChunks(chunk.getFileId()).get(chunk.getChunkNo()).getCurrentRepDeg() < repDegree && tries < Constants.TRIES) {
+					while (Peer.getDb().getBackedUpChunks(chunk.getFileId()).get(chunk.getChunkNo())
+							.getCurrentRepDeg() < repDegree && tries < Constants.TRIES) {
 						sendMessageBackup(chunk);
 
 						try {
@@ -122,7 +166,8 @@ public class Initiator extends Thread {
 						tries++;
 					}
 
-					if (Peer.getDb().getBackedUpChunks(chunk.getFileId()).get(chunk.getChunkNo()).getCurrentRepDeg() < repDegree){
+					if (Peer.getDb().getBackedUpChunks(chunk.getFileId()).get(chunk.getChunkNo())
+							.getCurrentRepDeg() < repDegree) {
 						System.out.println("TIMETOUT!!");
 					}
 
@@ -133,29 +178,24 @@ public class Initiator extends Thread {
 		}
 	}
 
-
-	
-    public void sendMessageBackup(Chunk chunk) {
+	public void sendMessageBackup(Chunk chunk) {
 		System.out.println("Sending chunk: " + chunk.getChunkNo());
 		byte[] msg, msgHeader;
-	    byte[] body;
+		byte[] body;
 
-		
-		String msgHeaderTemp = "PUTCHUNK" + " " + Constants.VERSION + " " + this.getId() + " "+ chunk.getFileId() + " "
-							+ chunk.getChunkNo() + " " + chunk.getReplicationDeg() + " " 
-							+ Constants.CRLF + Constants.CRLF;
+		String msgHeaderTemp = "PUTCHUNK" + " " + Constants.VERSION + " " + this.getId() + " " + chunk.getFileId() + " "
+				+ chunk.getChunkNo() + " " + chunk.getReplicationDeg() + " " + Constants.CRLF + Constants.CRLF;
 
 		msgHeader = msgHeaderTemp.getBytes(StandardCharsets.US_ASCII);
 		body = chunk.getData();
-		
+
 		msg = new byte[msgHeader.length + body.length];
-		
-	
+
 		// copy data from one array into another:
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-		
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
 		try {
-			outputStream.write( msgHeader );
+			outputStream.write(msgHeader);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -167,12 +207,12 @@ public class Initiator extends Thread {
 			e.printStackTrace();
 		}
 
-		message = outputStream.toByteArray( );
-		
+		message = outputStream.toByteArray();
+
 		Peer.backupListener.channel.send(message);
-	
+
 	}
-	
+
 	public void setMessage(byte[] message) {
 		this.message = message;
 	}

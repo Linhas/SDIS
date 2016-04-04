@@ -38,7 +38,6 @@ public class Peer implements Serializable  {
     	 //se space recclaim
     	 //se delete
 
-   //     db = new Database();
         loadDb();
 
         executor = Executors.newFixedThreadPool(12);
@@ -55,7 +54,6 @@ public class Peer implements Serializable  {
         executor.submit(backupListener);
         executor.submit(restoreListener);
         executor.submit(tryListener);
-
 
     }
 
@@ -119,7 +117,7 @@ public class Peer implements Serializable  {
     public synchronized static void saveDb() {
 
         ObjectOutputStream save = null;
-
+System.out.println("This has indeed happened");
         try {
             save = new ObjectOutputStream(new FileOutputStream("db.dbs"));
         } catch (FileNotFoundException e) {
