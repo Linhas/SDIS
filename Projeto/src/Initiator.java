@@ -59,7 +59,6 @@ public class Initiator extends Thread {
 	}
 
 	public void backupFunction(String fileN, int repDegree) {
-		ArrayList<Chunk> chunks2 = new ArrayList<>();
 		ManageChunk fileToTreat = new ManageChunk(fileN, repDegree);
 		int tries;
 
@@ -103,14 +102,6 @@ public class Initiator extends Thread {
 		}
 	}
 
-	public byte[] getMessage() {
-		return message;
-	}
-
-	public void receiveAnswerBackup(Chunk chunk){
-
-		chunk.incCurrentRepDeg();
-	}
 
 	
     public void sendMessageBackup(Chunk chunk) {
@@ -122,7 +113,7 @@ public class Initiator extends Thread {
 		String msgHeaderTemp = "PUTCHUNK" + " " + Constants.VERSION + " " + this.getId() + " "+ chunk.getFileId() + " "
 							+ chunk.getChunkNo() + " " + chunk.getReplicationDeg() + " " 
 							+ Constants.CRLF + Constants.CRLF;
-		//porque a porra do arraycopy tava a falhar
+
 		msgHeader = msgHeaderTemp.getBytes(StandardCharsets.US_ASCII);
 		body = chunk.getData();
 		
@@ -130,8 +121,6 @@ public class Initiator extends Thread {
 		
 	
 		// copy data from one array into another:
-		
-
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 		
 		try {
@@ -148,8 +137,6 @@ public class Initiator extends Thread {
 		}
 
 		message = outputStream.toByteArray( );
-		DatagramPacket dataPacket = new DatagramPacket(message, message.length, Peer.backupListener.getAddress(), Peer.backupListener.getPort());
-		
 		
 		Peer.backupListener.channel.send(message);
 	
