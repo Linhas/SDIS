@@ -45,9 +45,10 @@ public class Backup extends Thread{
                 Chunk chunk = new Chunk(header.get(3), Integer.parseInt(header.get(4)), Integer.parseInt(header.get(5)), body);
 
                 ManageChunk manageChunk = new ManageChunk(header.get(3), Integer.parseInt(header.get(5)));
-                manageChunk.saveChunk(chunk);
+               
                 if (!(Peer.getDb().findSavedChunk(chunk.getFileId(), chunk.getChunkNo()))) {
-                    Peer.getDb().addChunk(chunk);
+                	manageChunk.saveChunk(chunk);
+                	Peer.getDb().addChunk(chunk);
 
                     String msg = "STORED" + " " + Constants.VERSION + " 123 " + header.get(3) + " " + header.get(4) + Constants.CRLF + Constants.CRLF;
 

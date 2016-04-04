@@ -26,8 +26,14 @@ public class Control extends Thread {
                     System.out.println("Cant find chunk!");
             } else
                 System.out.println("Wrong version");
-        } else if (header.get(0).equals("y")){
-
+        } else if (header.get(0).equals("DELETE")){
+        	if(Peer.getDb().findFile(header.get(3))){
+        		ManageChunk manChunk = new ManageChunk(header.get(3));
+        		manChunk.deleteChunkFile(header.get(3));
+        		Peer.getDb().removeFileSaved(header.get(3));
+                
+            } else
+                System.out.println("Cant find chunk!");
         } else
             System.out.println("Invalid Message!!");
     }

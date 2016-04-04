@@ -50,11 +50,37 @@ public class Initiator extends Thread {
 			   
 
 
-		} else if (argumentList.get(0).equals("b")) {
-
-		} else if (argumentList.get(0).equals("BAcCKUP")) {
+		} else if (argumentList.get(0).equals("DELETE")) {
+			String hash = Peer.getDb().getFileHash(argumentList.get(1));
+			sendMessageDelete(hash);
+		} else if (argumentList.get(0).equals("SPACE_RECLAIM")) {
 
 		}
+
+	}
+
+
+	private void sendMessageDelete(String hash) {
+		byte[] msgHeader;
+		String msgHeaderTemp = "DELETE" + " " + Constants.VERSION + " " + this.getId() + " "+ hash  + " " 
+				+ Constants.CRLF + Constants.CRLF;
+		
+		msgHeader = msgHeaderTemp.getBytes(StandardCharsets.US_ASCII);
+		
+		message = msgHeader;
+		
+		for (int i = 0; i< 5; i++){
+			Peer.backupListener.channel.send(message);
+			 
+			try {
+				sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
 
 	}
 
@@ -73,6 +99,7 @@ public class Initiator extends Thread {
 				e.printStackTrace();
 			}
 			Peer.getDb().addFile(fileToTreat.getFileId(), chunks);
+			Peer.getDb().addFileMap(fileToTreat.getFileId(), fileToTreat.getFileName());
 
 
 			if (chunks.size() > 0) {

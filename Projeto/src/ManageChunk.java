@@ -29,6 +29,11 @@ public class ManageChunk {
 		this.fileName = fileName;
 		file = new File(fileName);
 	}
+	
+	public ManageChunk(String fileName){
+		this.fileName = fileName;
+		file = new File(fileName);
+	}
 /*
  * Counts number of chunks in a file by dividing file
  */
@@ -106,7 +111,7 @@ public class ManageChunk {
 	        }
 
 	         fileId = hexString.toString();
-	    } catch(Exception ex){
+	     } catch(Exception ex){
 	       throw new RuntimeException(ex);
 	    }
 	}
@@ -144,6 +149,20 @@ public class ManageChunk {
 		}
 		
 	} 
+	
+	public boolean deleteChunkFile(String fileHash){
+		Path p = Paths.get(fileHash);
+		try {
+			Files.deleteIfExists(p);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+
+		}
+		return true;
+		
+	}
 
 public String getFileName(){
 	return fileName;
