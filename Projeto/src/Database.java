@@ -112,7 +112,13 @@ public class Database implements Serializable {
 	}
 	
 	public synchronized String getFileHash(String filename){
-		return backedUpFiles2.get(filename);
+		
+		for(Map.Entry<String, String> entry : backedUpFiles2.entrySet()){
+			filename = entry.getValue(); 
+				return entry.getKey();
+			}
+		return null;
+		
 	}
 	
 	public synchronized boolean findFile(String fileHash){

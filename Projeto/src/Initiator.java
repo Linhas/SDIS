@@ -53,6 +53,7 @@ public class Initiator extends Thread {
 		} else if (argumentList.get(0).equals("DELETE")) {
 			String hash = Peer.getDb().getFileHash(argumentList.get(1));
 			sendMessageDelete(hash);
+			
 		} else if (argumentList.get(0).equals("SPACE_RECLAIM")) {
 
 		}
@@ -64,13 +65,13 @@ public class Initiator extends Thread {
 		byte[] msgHeader;
 		String msgHeaderTemp = "DELETE" + " " + Constants.VERSION + " " + this.getId() + " "+ hash  + " " 
 				+ Constants.CRLF + Constants.CRLF;
-		
+		System.out.println(hash);
 		msgHeader = msgHeaderTemp.getBytes(StandardCharsets.US_ASCII);
 		
 		message = msgHeader;
 		
 		for (int i = 0; i< 5; i++){
-			Peer.backupListener.channel.send(message);
+			Peer.controlListener.channel.send(message);
 			 
 			try {
 				sleep(500);

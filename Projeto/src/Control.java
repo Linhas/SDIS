@@ -17,6 +17,7 @@ public class Control extends Thread {
         //get header
         header = Utils.splitMessage(message);
         header.remove(0);
+        System.out.println("header: " + header.get(0));
 
         if (header.get(0).equals("STORED")){
             if (header.get(1).equals(Constants.VERSION)){
@@ -26,7 +27,8 @@ public class Control extends Thread {
                     System.out.println("Cant find chunk!");
             } else
                 System.out.println("Wrong version");
-        } else if (header.get(0).equals("DELETE")){
+        } 
+        else if (header.get(0).equals("DELETE")){
         	if(Peer.getDb().findFile(header.get(3))){
         		ManageChunk manChunk = new ManageChunk(header.get(3));
         		manChunk.deleteChunkFile(header.get(3));
