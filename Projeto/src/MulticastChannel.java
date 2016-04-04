@@ -17,14 +17,17 @@ public class MulticastChannel extends Channel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        /*
-         * descomentar quando for para ignorar as mensagens para mim própria
-         * try {
+
+        try {
+            mcSocket.setTimeToLive(2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
 			mcSocket.setLoopbackMode(true);
 		} catch (SocketException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}*/
+		}
             try {
                 mcSocket.joinGroup(this.address);
             } catch (IOException e) {

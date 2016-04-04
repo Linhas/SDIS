@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 
 /**
@@ -28,48 +30,46 @@ public class Backup extends Thread{
     public void run() {
 
         String aux;
-        BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(message)));
 
-        //get header
+        //get header and aux
         aux = "";
-        try {
-            aux = in.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String[] rawHeader = aux.split("\\s+");
-
-        for(String field : rawHeader){
-            header.add(field.trim());
-        }
+        header = Utils.splitMessage(message);
+        aux = header.get(0);
+        header.remove(0);
         
         if (header.get(0).equals("PUTCHUNK")){
             if (header.get(1).equals(Constants.VERSION)){
 
                 //get body (message-header)
-                System.out.println("TESTING!!!!!");
                 byte[] body = Arrays.copyOfRange(message, aux.length()+4, message.length);
                 Chunk chunk = new Chunk(header.get(3), Integer.parseInt(header.get(4)), Integer.parseInt(header.get(5)), body);
 
+                ManageChunk manageChunk = new ManageChunk(header.get(3), Integer.parseInt(header.get(5)));
+                manageChunk.saveChunk(chunk);
                 if (!(Peer.getDb().findSavedChunk(chunk.getFileId(), chunk.getChunkNo()))) {
                     Peer.getDb().addChunk(chunk);
-                    
-                }
-                //System.out.println("body: "+ new String(body));
-                
-            }
 
+                    String mssg = "STORED" + " " + Constants.VERSION + " 123 " + header.get(3) + " " + header.get(4) + Constants.CRLF + Constants.CRLF;
+
+                    Random r = new Random();
+                    int time = r.nextInt(401);
+                    try {
+                        sleep(time);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    Peer.getControlListener().send(mssg.getBytes());
+                }
+
+
+            }
         }
         else
             System.out.println("Invalid message!");
-
     }
     
     public void readMessage(DatagramPacket mess){
     	
     }
-
-
-
 }

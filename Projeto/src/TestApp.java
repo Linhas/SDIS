@@ -127,7 +127,6 @@ public class TestApp {
 		}
 
 
-
 		byte[] message = new byte[256];
 
 		message = (command + " " + operationSpecs + Constants.CRLF + Constants.CRLF).getBytes();
@@ -139,14 +138,6 @@ public class TestApp {
 			e.printStackTrace();
 		}
 		System.out.println("Message sent!");
-
-
-
-
-
-
-
-        System.out.println(new String(message, StandardCharsets.UTF_8));
 	}
 	
 	

@@ -3,6 +3,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 
@@ -72,7 +76,6 @@ public class ManageChunk {
 				}
 			} 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -114,18 +117,27 @@ public class ManageChunk {
 		return fileId;
 	}
 /*
- * SAVE CHUNKS, definir diretorio?? 	
+ * SAVE CHUNKS, definir diretorio??
+ 	*
  */
 	public void saveChunk(Chunk chunk){
-		String filename = chunk.getFileId() + "." + chunk.getId();
-		
-		File filechunk = new File(filename);
+		String filename = chunk.getFileId() + "//" + chunk.getChunkNo() + ".part";
+		File targetFile = new File(filename);
+		File parent = targetFile.getParentFile();
+		if(!parent.exists() && !parent.mkdirs()){
+			parent.mkdir();
+		}
+
+
+
+		Path file = Paths.get(filename);
 		if(chunk.getData().length > 0)
 		{
 		try {
-			FileOutputStream writer = new FileOutputStream(filechunk);
-			writer.write(chunk.getData());
-			writer.close();
+			Files.write(file, chunk.getData());
+			//FileOutputStream writer = new FileOutputStream(filechunk);
+			//writer.write(chunk.getData());
+			//writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -25,16 +25,14 @@ public class Listener extends Thread {
 			msg = channel.receive();
 			if (msg != null) {
 				if (name.equals("Control"))
-					// TODO: Control
-					;
+					new Control(msg).start();
 				else if (name.equals("Backup"))
 					new Backup(msg).start();
 				else if (name.equals("Restore"))
 					// TODO: Restore
 					;
 				else if (name.equals("Initiator"))
-					{
-					new Initiator(msg).start();}
+					new Initiator(msg).start();
 				else
 					System.out.println("Wrong channels!");
 			}

@@ -1,3 +1,4 @@
+import javax.xml.bind.SchemaOutputResolver;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,8 +23,6 @@ public class Initiator extends Thread {
 	public void run() {
 		String aux;
 		BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(message)));
-		System.out.println("Hey jude, you are running");
-
 		// get header
 		aux = "";
 		try {
@@ -38,15 +37,11 @@ public class Initiator extends Thread {
 			argumentList.add(field.trim());
 		}
 		if (argumentList.get(0).equals("BACKUP")) {
-			
-			System.out.println("Hey jude, don't let you down");
-
 			fileToTreat = new ManageChunk(argumentList.get(1), Integer.parseInt(argumentList.get(2)));
 			backupFunction(argumentList.get(1), Integer.parseInt(argumentList.get(2)));
 			try {
 				fileToTreat.getListOfChunks();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -62,42 +57,51 @@ public class Initiator extends Thread {
 		}
 
 	}
-	
-	 public void backupFunction(String fileN, int repDegree){
-	    	//if file as already been backed up
-		 ArrayList<Chunk> chunks2 = new ArrayList<>();
-	    	
-	    	ManageChunk fileToTreat = new ManageChunk(fileN,repDegree);
-			if(fileToTreat.countNumberOfChunks()){
-	    		fileToTreat.sha256();
-	    		
-	    		ArrayList<Chunk> chunks = null;
 
-				try {
-					chunks = fileToTreat.getListOfChunks();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				Peer.getDb().addFile(fileToTreat.getFileId(), chunks);
+	public void backupFunction(String fileN, int repDegree) {
+		ArrayList<Chunk> chunks2 = new ArrayList<>();
+		ManageChunk fileToTreat = new ManageChunk(fileN, repDegree);
+		int tries;
+
+		if (fileToTreat.countNumberOfChunks()) {
+			fileToTreat.sha256();
+
+			ArrayList<Chunk> chunks = null;
+
+			try {
+				chunks = fileToTreat.getListOfChunks();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			Peer.getDb().addFile(fileToTreat.getFileId(), chunks);
 
 
-	    		if(chunks.size() > 0){
-	    			for(Chunk chunk : chunks) {
-	    				//TODO: NAO ESQUECER TENTATIVAS
-	    				while(Peer.getDb().getBackedUpChunks(chunk.getFileId()).get(chunk.getChunkNo()).getCurrentRepDeg()< repDegree){
-	    				sendMessageBackup(chunk);
-	    				receiveAnswerBackup(chunk);
+			if (chunks.size() > 0) {
+				for (Chunk chunk : chunks) {
+					tries = 0;
+					int time = 500;
+					while (Peer.getDb().getBackedUpChunks(chunk.getFileId()).get(chunk.getChunkNo()).getCurrentRepDeg() < repDegree && tries < Constants.TRIES) {
+						sendMessageBackup(chunk);
 
+						try {
+							sleep(time);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						time += time;
+						tries++;
 					}
 
-	    		}}
-	    		else
-	    		{
-	    			System.out.println("This wont do. There are no chunks to Backup");
-	    			}
-	    	}
-	    }
+					if (Peer.getDb().getBackedUpChunks(chunk.getFileId()).get(chunk.getChunkNo()).getCurrentRepDeg() < repDegree){
+						System.out.println("TIMETOUT!!");
+					}
+
+				}
+			} else {
+				System.out.println("This wont do. There are no chunks to Backup");
+			}
+		}
+	}
 
 	public byte[] getMessage() {
 		return message;
@@ -137,8 +141,7 @@ public class Initiator extends Thread {
 			e.printStackTrace();
 		}
 		try {
-			outputStream.write( body );
-			System.out.println(body.toString());
+			outputStream.write(body);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

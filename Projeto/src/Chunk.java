@@ -20,7 +20,7 @@ public class Chunk {
 	
 	private byte[] data;
 	
-	//should know where chunks are stored? Se calhar uma String para sabermos quem eles são?
+	//should know where chunks are stored? Se calhar uma String para sabermos quem eles sao?
 	private ArrayList<String> peers;
 
 	
